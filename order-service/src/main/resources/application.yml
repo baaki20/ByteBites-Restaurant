@@ -1,0 +1,59 @@
+server:
+  port: 8086 # Or another available port, different from auth-service, restaurant-service
+
+spring:
+  application:
+    name: order-service
+  config:
+    import: "optional:configserver:" # To enable config server client
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server # Name of your config server in Eureka
+      stream:
+        bindings:
+          # Define an output binding for publishing events
+          orderPlacedOutput: # This is a logical name for our output channel
+            destination: order-events # This will be the RabbitMQ exchange name
+            contentType: application/json
+        rabbit:
+          bindings:
+            orderPlacedOutput:
+              producer:
+                exchange-type: topic # Or direct, fanout depending on your routing needs. Topic is flexible.
+                routing-key-expression: "'order.placed'" # A routing key for the event
+                # For durability and reliability
+                producer:
+                  transacted: false # Set to true for transactional publishing if needed, but often impacts performance
+                  republish-to-dlq: true # Publish to Dead Letter Queue on error
+                  return-data-type: Full
+        rabbitmq:
+          host: localhost # Assuming RabbitMQ is running locally, update if different
+          port: 5672
+          username: guest # Default RabbitMQ credentials
+          password: guest
+
+  datasource:
+    url: jdbc:h2:mem:orderdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: baaki
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: update # Automatically create/update schema (for development)
+    show-sql: true # Show SQL queries in logs
+    properties:
+      hibernate:
+        format_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka # Your Eureka server URL
+    fetch-registry: true
+    register-with-eureka: true
+
+logging:
+  level:
+    com.bytebites.orderservice: DEBUG # Set appropriate log level for your package
