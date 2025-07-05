@@ -29,7 +29,6 @@ import java.util.List;
 @Component
 public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory<JwtAuthenticationFilterFactory.Config> implements InitializingBean {
 
-    // Inject the JWKS URI from properties
     @Value("${jwt.jwk-set-uri}")
     private String jwkSetUri;
 
@@ -47,12 +46,9 @@ public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // Initialize the JWT processor once properties are set
         try {
-            // JWKSource for remote JWK Set
             JWKSource<SecurityContext> jwkSource = new RemoteJWKSet<>(new URL(jwkSetUri));
 
-            // The JWSKeySelector selects the key(s) for verifying the JWT signature
             JWSKeySelector<SecurityContext> jwsKeySelector =
                     new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, jwkSource);
 
@@ -69,8 +65,6 @@ public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            // Public paths are handled by API Gateway's SecurityConfig and don't need JWT validation here
-            // This filter is applied only to routes that need authentication
 
             List<String> authHeaders = exchange.getRequest().getHeaders().get(AUTHORIZATION_HEADER);
 
@@ -81,26 +75,21 @@ public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory
             String token = authHeaders.get(0).substring(BEARER_PREFIX.length());
 
             try {
-                // Process and validate the JWT token
                 JWTClaimsSet claimsSet = jwtProcessor.process(token, null);
 
-                // Add validated user information to request headers for downstream services
                 ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                         .header("X-Auth-User", claimsSet.getSubject())
-                        // Assuming roles are in a 'roles' claim (from JwtService)
                         .header("X-Auth-Roles", String.join(",", (List<String>) claimsSet.getClaim("roles")))
                         .build();
 
                 return chain.filter(exchange.mutate().request(mutatedRequest).build());
 
             } catch (BadJOSEException e) {
-                // This covers signature validation, invalid claims, etc.
                 System.err.println("JWT Validation Error (BadJOSEException): " + e.getMessage());
                 return onError(exchange, "Invalid JWT Token: " + e.getMessage(), HttpStatus.UNAUTHORIZED);
             } catch (Exception e) {
-                // Catch any other unexpected errors during processing
                 System.err.println("Error processing JWT Token: " + e.getMessage());
-                return onError(exchange, "Error processing JWT Token", HttpStatus.INTERNAL_SERVER_ERROR); // Use 500 for unexpected errors
+                return onError(exchange, "Error processing JWT Token", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         };
     }
@@ -108,8 +97,6 @@ public class JwtAuthenticationFilterFactory extends AbstractGatewayFilterFactory
     private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus httpStatus) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
-        // Optionally, add a response body for more detail
-        // return response.writeWith(Mono.just(response.bufferFactory().wrap(message.getBytes())));
         return response.setComplete();
     }
 }

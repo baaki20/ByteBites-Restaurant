@@ -22,10 +22,10 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order; // Link back to the Order
+    private Order order;
 
-    private Long menuItemId; // ID of the menu item from restaurant-service
-    private String itemName; // Redundant but useful for reporting
+    private Long menuItemId;
+    private String itemName;
     private Integer quantity;
-    private BigDecimal pricePerUnit; // Price at the time of order
+    private BigDecimal pricePerUnit;
 }

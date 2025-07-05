@@ -37,15 +37,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          # This is for Spring Security's built-in resource server, not directly used by JwtAuthenticationFilterFactory.
-          # However, it's good practice to keep it consistent if other parts might rely on it.
-          # The Authorization Server's default JWKS endpoint is /oauth2/jwks.
-          jwk-set-uri: http://localhost:8082/oauth2/jwks # <-- Corrected to the default AS endpoint
+          jwk-set-uri: http://localhost:8082/oauth2/jwks
 
 jwt:
-  # This property is now used by JwtAuthenticationFilterFactory to fetch the JWKS.
-  # It should point to the auth-service's JWKS endpoint.
-  jwk-set-uri: http://localhost:8082/oauth2/jwks # <-- NEW PROPERTY for JwtAuthenticationFilterFactory
+  jwk-set-uri: http://localhost:8082/oauth2/jwks
 
 eureka:
   client:

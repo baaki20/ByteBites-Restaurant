@@ -1,37 +1,34 @@
 server:
-  port: 8086 # Or another available port, different from auth-service, restaurant-service
+  port: 8086
 
 spring:
   application:
     name: order-service
   config:
-    import: "optional:configserver:" # To enable config server client
+    import: "optional:configserver:"
   cloud:
     config:
       discovery:
         enabled: true
-        service-id: config-server # Name of your config server in Eureka
+        service-id: config-server
       stream:
         bindings:
-          # Define an output binding for publishing events
-          orderPlacedOutput: # This is a logical name for our output channel
-            destination: order-events # This will be the RabbitMQ exchange name
+            destination: order-events
             contentType: application/json
         rabbit:
           bindings:
             orderPlacedOutput:
               producer:
-                exchange-type: topic # Or direct, fanout depending on your routing needs. Topic is flexible.
-                routing-key-expression: "'order.placed'" # A routing key for the event
-                # For durability and reliability
+                exchange-type: topic
+                routing-key-expression: "'order.placed'"
                 producer:
-                  transacted: false # Set to true for transactional publishing if needed, but often impacts performance
-                  republish-to-dlq: true # Publish to Dead Letter Queue on error
+                  transacted: false
+                  republish-to-dlq: true
                   return-data-type: Full
         rabbitmq:
-          host: localhost # Assuming RabbitMQ is running locally, update if different
+          host: localhost
           port: 5672
-          username: guest # Default RabbitMQ credentials
+          username: guest
           password: guest
 
   datasource:
@@ -41,8 +38,8 @@ spring:
     password: secret
   jpa:
     hibernate:
-      ddl-auto: update # Automatically create/update schema (for development)
-    show-sql: true # Show SQL queries in logs
+      ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
@@ -50,10 +47,10 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka # Your Eureka server URL
+      defaultZone: http://localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
 
 logging:
   level:
-    com.bytebites.orderservice: DEBUG # Set appropriate log level for your package
+    com.bytebites.orderservice: DEBUG

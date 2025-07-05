@@ -11,7 +11,7 @@ public class RsaKeyGenerator {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048); // Key size (e.g., 2048 bits)
+        keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
         PrivateKey privateKey = keyPair.getPrivate();
