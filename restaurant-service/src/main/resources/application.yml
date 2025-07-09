@@ -1,21 +1,32 @@
+server:
+  port: 8084
+
 spring:
   application:
     name: restaurant-service
-  cloud:
-    config:
-      discovery:
-        enabled: true
-        service-id: config-server
-      uri: http://localhost:8888
-      fail-fast: true
+  datasource:
+    url: jdbc:h2:mem:restaurant_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: baaki
+    password: secret
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+#  cloud:
+#    config:
+#      discovery:
+#        enabled: true
+#        service-id: config-server
+#      uri: http://localhost:8888
+#      fail-fast: true
   config:
-    import: configserver:http://localhost:8888
+    import: optional:configserver:http://localhost:8888
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8082/.well-known/jwks.json
-
 
 eureka:
   client:
@@ -27,3 +38,7 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.cloud.gateway: DEBUG
     reactor.netty: DEBUG
+
+bytebites:
+  restaurant:
+    welcome-message: "Welcome to the Restaurant Service!"
