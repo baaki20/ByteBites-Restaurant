@@ -32,11 +32,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginAndGenerateToken(@RequestBody AuthRequest authRequest) {
-        try {
-            String token = authService.authenticateAndGenerateToken(authRequest.getEmail(), authRequest.getPassword());
-            return ResponseEntity.ok(new AuthResponse(token));
-        } catch (Exception e) {
-            return new ResponseEntity<>(new AuthResponse("Authentication failed: " + e.getMessage()), HttpStatus.UNAUTHORIZED);
-        }
+            AuthResponse authResponse = authService.authenticateAndGenerateToken(authRequest.getEmail(), authRequest.getPassword());
+            return ResponseEntity.ok(authResponse);
     }
 }

@@ -11,25 +11,15 @@ spring:
       discovery:
         enabled: true
         service-id: config-server
-      stream:
-        bindings:
-            destination: order-events
-            contentType: application/json
-        rabbit:
-          bindings:
-            orderPlacedOutput:
-              producer:
-                exchange-type: topic
-                routing-key-expression: "'order.placed'"
-                producer:
-                  transacted: false
-                  republish-to-dlq: true
-                  return-data-type: Full
-        rabbitmq:
-          host: localhost
-          port: 5672
-          username: guest
-          password: guest
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+        spring.json.value.default.type: com.bytebites.orderservice.event.OrderPlacedEvent
 
   datasource:
     url: jdbc:h2:mem:orderdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE

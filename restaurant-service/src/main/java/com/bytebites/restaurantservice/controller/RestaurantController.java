@@ -2,6 +2,7 @@ package com.bytebites.restaurantservice.controller;
 
 import com.bytebites.restaurantservice.dto.RestaurantRequest;
 import com.bytebites.restaurantservice.dto.RestaurantResponse;
+import com.bytebites.restaurantservice.security.GatewayAuthenticationToken;
 import com.bytebites.restaurantservice.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,16 +27,18 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_RESTAURANT_OWNER')")
+//    @PreAuthorize("hasRole('ROLE_RESTAURANT_OWNER')")
     public RestaurantResponse createRestaurant(@RequestBody RestaurantRequest request,
-                                               @AuthenticationPrincipal Jwt jwt) {
-        UUID ownerId = getOwnerIdFromJwt(jwt);
+                                               @AuthenticationPrincipal GatewayAuthenticationToken authentication) {
+
+        String userEmail = authentication.getEmail();
+        UUID ownerId = UUID.nameUUIDFromBytes(userEmail.getBytes());
         return restaurantService.createRestaurant(request, ownerId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     public List<RestaurantResponse> getAllRestaurants() {
         return restaurantService.getAllRestaurants();
     }

@@ -17,8 +17,7 @@ public class SecurityConfig {
             .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
             .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
             .authorizeExchange(exchanges -> exchanges
-                .pathMatchers("/auth/register", "/auth/login").permitAll()
-                .pathMatchers("/auth/**").authenticated()
+                .pathMatchers("/auth/**").permitAll()
                 .pathMatchers("/api/restaurants", "/api/restaurants/**").permitAll()
                 .anyExchange().authenticated()
             );

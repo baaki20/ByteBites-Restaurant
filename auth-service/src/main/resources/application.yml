@@ -26,17 +26,14 @@ spring:
     console:
       enabled: true
       path: /h2-console
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8082/.well-known/jwks.json
 
-jwt:
-  rsa:
-    private-key: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC87F/mNwChRG7XJZ7B13tmMWuowSPUAlGefCSFAsNEFimiq4LFlto7KMQJLRNCLHoyaMhSwmG4VDtfS0C+f4FCd4V70ZukrmfX5pvgNo4M7B+Ckr8VsJjH1MW3JGKPHOx3AQptcxbog5kJqxZ96GR6aT94hV29xkVE40AWe+hxzGI8wT4QwAZciMitGoAKJidg4FwL5b3BdLczAPc9tLAFNXWiqE/GC4/sEV6ga95GzqkLKJryDJW+8qEQlPUcUrswCxrU008uUgupy6gm/czLHqW3ng0vfRW4u/Bx6D38tpCbDZNWeuyRmggZBp06dOxibZR9vdEwqseyotm1ucglAgMBAAECggEADlhjKRzwvE4bndSVIHeXPs7uiNWEPfCgd/NJ5purbhEXakBcYVqEtEydI2vmdCDidSTFs/BfRoWG2Jk4j6ko4dN83EZclihJaaMbdO6k4fr6ot83s+hBQZ3jbCD5fDp1riJIbhUjc9ZXmYdXNt+djuSiVX7IURpWtNYN+Lxsja9rcyesgW4Fb7Xq9o6nXBBCzBfcQDu6d7QMKXUBY4VcoMuuDk6YdrmhJfXoySMB0usAUVTrT4AWeqvpoYZIjHurzYX+J3/v3vFWGMU53tDThToERu0BkzSIBmGozMRxXx9M2m6Fu4U2AliqyRI2PUmiJzARE+fNUzaYkyjGL2wXQQKBgQDuYJJCz5t5OfD+Mjo7tphUOCZa5HnfdHrLh4nj5Iw1ldFBy9yLdrmbbzHRFuBsYBEzJUzxgAXGcmzq/9Bse04vvbu0Vik4Ec2f9zJlR90Q6Hx/ASkzzZboLwqPcWxkguTZ3Bv8mSy1yux3vhQy88d6mew7Z4x61p2sf8X2xRLKNQKBgQDK49wA36W7mjcTqN584Jjo1TeT2VBlUVKMKilwKNkt0+EHenBCuW0W4+lf3se0VfywiyJCwn9/TKxzIdWOx6hcQ0i/FuXvLibXyscU4QM47LBOe0PDcIDs3FgzawuKjLLdvJefcsiw220mXF7OycMYvmTVqsjt8BTm+p381x9EMQKBgQCqjIt4o6K/7BWhOPxzBqQb9YRzmW4c0vCcN+APHdC28failaG4YnxPWhIRX8W3pFAKAND5JDh9kBafV+GeC+aXv67RSqf5BrvQjIMQ9YaT91JDZ+g7uQcUHbv3fxYnH4Nu381iP5E+i+39ihBXmBULgZ8DrYVTycNLzKstcDiOVQKBgQCtJgzJihQsqI28b2+A70RP4DcQLHPaI67pA8pdd97wp1PyR+GqcAjTcinmsX+JPaDrIbJZexfIEi1SDFvvACGEq79XpTkSCDcKDnocLXPMjuJf9/56unasrddv+jjdQvobFinn39O6a2kZRdd7buDbKxFu79OOjEeqX9OYxhZe4QKBgArL0QG4OWERS0AMcxqetHKHXe+SFp8RiROg3nCB4IPBzwA6DeAZd13mTH9f12TBimWIgaDmu0FC/zJdA0PmMKY8x+tcM+heBMvWGroaRRt1iKmW/YeA8s8HhrBGgaN1uGItu/qk1GWi+RtxXWjP1pRgom2469uzOeo60OQEI6NC
-    public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvOxf5jcAoURu1yWewdd7ZjFrqMEj1AJRnnwkhQLDRBYpoquCxZbaOyjECS0TQix6MmjIUsJhuFQ7X0tAvn+BQneFe9GbpK5n1+ab4DaODOwfgpK/FbCYx9TFtyRijxzsdwEKbXMW6IOZCasWfehkemk/eIVdvcZFRONAFnvoccxiPME+EMAGXIjIrRqACiYnYOBcC+W9wXS3MwD3PbSwBTV1oqhPxguP7BFeoGveRs6pCyia8gyVvvKhEJT1HFK7MAsa1NNPLlILqcuoJv3Myx6lt54NL30VuLvwceg9/LaQmw2TVnrskZoIGQadOnTsYm2Ufb3RMKrHsqLZtbnIJQIDAQAB
-  expiration-milliseconds: 3600000
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: 900000
+      refresh-token:
+        expiration: 6040000000
 
 eureka:
   client:

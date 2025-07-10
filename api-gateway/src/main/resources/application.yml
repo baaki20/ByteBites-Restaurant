@@ -17,30 +17,30 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: auth-service-register-login
-          uri: lb://AUTH-SERVICE
-          predicates:
-            - Path=/auth/register, /auth/login
-        - id: auth-service-secured
+        - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/**
-          filters:
-            - name: JwtAuthenticationFilterFactory
+#          filters:
+#            - name: JwtAuthenticationFilter
         - id: restaurant-service
           uri: lb://RESTAURANT-SERVICE
           predicates:
-            - Path=/api/restaurants/, /api/restaurants/**
-          filters:
-            - name: JwtAuthenticationFilterFactory
+            - Path=/api/restaurants/**
+
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8082/oauth2/jwks
 
-jwt:
-  jwk-set-uri: http://localhost:8082/oauth2/jwks
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET}
+      expiration: 900000
+      refresh-token:
+        expiration: 6040000000
 
 eureka:
   client:

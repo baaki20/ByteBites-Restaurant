@@ -1,5 +1,6 @@
 package com.bytebites.authservice.service;
 
+import com.bytebites.authservice.model.Role;
 import com.bytebites.authservice.model.User;
 import com.bytebites.authservice.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,11 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                mapRolesToAuthorities(user.getRoles())
-        );
+        return user;
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<String> roles) {
